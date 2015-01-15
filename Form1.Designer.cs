@@ -1,6 +1,6 @@
 ﻿namespace Follow_Up_Telescope
 {
-    partial class Form1
+    partial class FormFUTMain
     {
         /// <summary>
         /// 必需的设计器变量。
@@ -28,19 +28,25 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.系统ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.退出EToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.选项OToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.参数PToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.关于AboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
-            this.groupBox5 = new System.Windows.Forms.GroupBox();
-            this.label1 = new System.Windows.Forms.Label();
-            this.labelWCurPos = new System.Windows.Forms.Label();
-            this.label3 = new System.Windows.Forms.Label();
             this.labelWMovStatus = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
+            this.labelWCurPos = new System.Windows.Forms.Label();
+            this.label1 = new System.Windows.Forms.Label();
+            this.groupBox5 = new System.Windows.Forms.GroupBox();
+            this.timerUpdateStatus = new System.Windows.Forms.Timer(this.components);
+            this.label2 = new System.Windows.Forms.Label();
+            this.labelWConnStatus = new System.Windows.Forms.Label();
             this.menuStrip1.SuspendLayout();
             this.groupBox4.SuspendLayout();
             this.SuspendLayout();
@@ -49,6 +55,7 @@
             // 
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.系统ToolStripMenuItem,
+            this.选项OToolStripMenuItem,
             this.关于AboutToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
@@ -69,6 +76,20 @@
             this.退出EToolStripMenuItem.Name = "退出EToolStripMenuItem";
             this.退出EToolStripMenuItem.Size = new System.Drawing.Size(115, 22);
             this.退出EToolStripMenuItem.Text = "退出(&E)";
+            // 
+            // 选项OToolStripMenuItem
+            // 
+            this.选项OToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.参数PToolStripMenuItem});
+            this.选项OToolStripMenuItem.Name = "选项OToolStripMenuItem";
+            this.选项OToolStripMenuItem.Size = new System.Drawing.Size(62, 21);
+            this.选项OToolStripMenuItem.Text = "选项(&O)";
+            // 
+            // 参数PToolStripMenuItem
+            // 
+            this.参数PToolStripMenuItem.Name = "参数PToolStripMenuItem";
+            this.参数PToolStripMenuItem.Size = new System.Drawing.Size(115, 22);
+            this.参数PToolStripMenuItem.Text = "参数(&P)";
             // 
             // 关于AboutToolStripMenuItem
             // 
@@ -105,6 +126,8 @@
             // 
             // groupBox4
             // 
+            this.groupBox4.Controls.Add(this.labelWConnStatus);
+            this.groupBox4.Controls.Add(this.label2);
             this.groupBox4.Controls.Add(this.labelWMovStatus);
             this.groupBox4.Controls.Add(this.label3);
             this.groupBox4.Controls.Add(this.labelWCurPos);
@@ -116,6 +139,42 @@
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "滤光片转轮状态";
             // 
+            // labelWMovStatus
+            // 
+            this.labelWMovStatus.AutoSize = true;
+            this.labelWMovStatus.Location = new System.Drawing.Point(108, 135);
+            this.labelWMovStatus.Name = "labelWMovStatus";
+            this.labelWMovStatus.Size = new System.Drawing.Size(53, 12);
+            this.labelWMovStatus.TabIndex = 3;
+            this.labelWMovStatus.Text = "stopped.";
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(26, 135);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(59, 12);
+            this.label3.TabIndex = 2;
+            this.label3.Text = "当前状态:";
+            // 
+            // labelWCurPos
+            // 
+            this.labelWCurPos.AutoSize = true;
+            this.labelWCurPos.Location = new System.Drawing.Point(108, 100);
+            this.labelWCurPos.Name = "labelWCurPos";
+            this.labelWCurPos.Size = new System.Drawing.Size(47, 12);
+            this.labelWCurPos.TabIndex = 1;
+            this.labelWCurPos.Text = "unknown";
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(24, 101);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(59, 12);
+            this.label1.TabIndex = 0;
+            this.label1.Text = "当前位置:";
+            // 
             // groupBox5
             // 
             this.groupBox5.Location = new System.Drawing.Point(482, 294);
@@ -125,43 +184,29 @@
             this.groupBox5.TabStop = false;
             this.groupBox5.Text = "调焦器状态";
             // 
-            // label1
+            // timerUpdateStatus
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(23, 33);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(59, 12);
-            this.label1.TabIndex = 0;
-            this.label1.Text = "当前位置:";
+            this.timerUpdateStatus.Tick += new System.EventHandler(this.timerUpdateStatus_Tick);
             // 
-            // labelWCurPos
+            // label2
             // 
-            this.labelWCurPos.AutoSize = true;
-            this.labelWCurPos.Location = new System.Drawing.Point(107, 32);
-            this.labelWCurPos.Name = "labelWCurPos";
-            this.labelWCurPos.Size = new System.Drawing.Size(41, 12);
-            this.labelWCurPos.TabIndex = 1;
-            this.labelWCurPos.Text = "label2";
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(28, 48);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(59, 12);
+            this.label2.TabIndex = 4;
+            this.label2.Text = "连接状态:";
             // 
-            // label3
+            // labelWConnStatus
             // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(25, 67);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(59, 12);
-            this.label3.TabIndex = 2;
-            this.label3.Text = "当前状态:";
+            this.labelWConnStatus.AutoSize = true;
+            this.labelWConnStatus.Location = new System.Drawing.Point(110, 48);
+            this.labelWConnStatus.Name = "labelWConnStatus";
+            this.labelWConnStatus.Size = new System.Drawing.Size(41, 12);
+            this.labelWConnStatus.TabIndex = 5;
+            this.labelWConnStatus.Text = "未连接";
             // 
-            // labelWMovStatus
-            // 
-            this.labelWMovStatus.AutoSize = true;
-            this.labelWMovStatus.Location = new System.Drawing.Point(107, 67);
-            this.labelWMovStatus.Name = "labelWMovStatus";
-            this.labelWMovStatus.Size = new System.Drawing.Size(41, 12);
-            this.labelWMovStatus.TabIndex = 3;
-            this.labelWMovStatus.Text = "label4";
-            // 
-            // Form1
+            // FormFUTMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -173,8 +218,9 @@
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.menuStrip1);
             this.MainMenuStrip = this.menuStrip1;
-            this.Name = "Form1";
+            this.Name = "FormFUTMain";
             this.Text = "Follow-up Telescope";
+            this.Load += new System.EventHandler(this.FormFUTMain_Load);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.groupBox4.ResumeLayout(false);
@@ -199,6 +245,11 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label labelWCurPos;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.ToolStripMenuItem 选项OToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem 参数PToolStripMenuItem;
+        private System.Windows.Forms.Timer timerUpdateStatus;
+        private System.Windows.Forms.Label labelWConnStatus;
+        private System.Windows.Forms.Label label2;
     }
 }
 
