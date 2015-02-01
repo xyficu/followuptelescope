@@ -20,11 +20,119 @@ namespace Follow_Up_Telescope
         //save device status
         private DeviceStatus mDeviceStatus;
         private Socket mServer;
+        private Thread refreshThread;
+        private int refreshFreq;
+        private Thread removeInvalidDeviceThread;
+        private int removeFreq;
 
         public FutTcpServer(DeviceStatus dev)
         {
             mDeviceConnections = new Dictionary<string, Socket>();
             mDeviceStatus = dev;
+
+            refreshFreq = 1000;
+            refreshThread = new Thread(new ThreadStart(RefreshStatus));
+            refreshThread.IsBackground = true;
+            refreshThread.Start();
+            
+            removeFreq = 1000;
+            removeInvalidDeviceThread = new Thread(new ThreadStart(RemoveInvalidDevice));
+            removeInvalidDeviceThread.IsBackground = true;
+            removeInvalidDeviceThread.Start();
+        }
+
+
+        //remove invalid device
+        private void RemoveInvalidDevice()
+        {
+            try
+            {
+                while (true)
+                {
+                    foreach (string key in mDeviceConnections.Keys)
+                    {
+                        if (!mDeviceConnections[key].Poll(-1, SelectMode.SelectRead))
+                        {
+                            mDeviceConnections.Remove(key);
+                        }
+                    }
+                    Thread.Sleep(removeFreq);
+                }
+            }
+            catch (System.Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+            }
+
+
+        }
+
+        //获取local time
+        private string GetLocalTime()
+        {
+            return DateTime.Now.Year.ToString() +
+                        DateTime.Now.Month.ToString() +
+                        DateTime.Now.Day.ToString() +
+                        "T" +
+                        DateTime.Now.Hour.ToString() +
+                        DateTime.Now.Minute.ToString() +
+                        DateTime.Now.Second.ToString() +
+                        "." +
+                        DateTime.Now.Millisecond.ToString();
+        }
+
+
+
+        private void RefreshStatus()
+        {
+            Socket value;
+            try
+            {
+                while (true)
+                {
+                    //更新Wheel状态
+                    if (mDeviceConnections.TryGetValue("WHEEL", out value))
+                    {
+                        string lt = GetLocalTime();
+                        string data = "W,STATUS," + lt;
+                        Console.WriteLine(data);
+                        byte[] msg = System.Text.Encoding.ASCII.GetBytes(data);
+                        mDeviceConnections["WHEEL"].Send(msg);
+                    }
+                    //更新CCD状态
+                    if (mDeviceConnections.TryGetValue("CCD", out value))
+                    {
+                        string lt = GetLocalTime();
+                        string data = "C,STATUS," + lt;
+                        Console.WriteLine(data);
+                        byte[] msg = System.Text.Encoding.ASCII.GetBytes(data);
+                        mDeviceConnections["CCD"].Send(msg);
+                    }
+                    //更新Focuser状态
+                    if (mDeviceConnections.TryGetValue("FOCUSER", out value))
+                    {
+                        string lt = GetLocalTime();
+                        string data = "F,STATUS," + lt;
+                        Console.WriteLine(data);
+                        byte[] msg = System.Text.Encoding.ASCII.GetBytes(data);
+                        mDeviceConnections["FOCUSER"].Send(msg);
+                    }
+                    //更新Mount状态
+                    if (mDeviceConnections.TryGetValue("MOUNT", out value))
+                    {
+                        string lt = GetLocalTime();
+                        string data = "M,STATUS," + lt;
+                        Console.WriteLine(data);
+                        byte[] msg = System.Text.Encoding.ASCII.GetBytes(data);
+                        mDeviceConnections["MOUNT"].Send(msg);
+                    }
+                    System.Threading.Thread.Sleep(refreshFreq);
+                }
+            }
+            catch (System.Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+            }
 
         }
 
@@ -85,6 +193,8 @@ namespace Follow_Up_Telescope
                 return "";
             }
         }
+
+
 
 
     }
@@ -151,8 +261,6 @@ namespace Follow_Up_Telescope
 
                 mService.Close();
                 mConnections--;
-                //remove invalid socket  NEED FIX
-                RemoveInvalidDevice();
                 Console.WriteLine("client closed: {0} connection(s)", mConnections);
             }
             catch (System.Exception ex)
@@ -160,18 +268,6 @@ namespace Follow_Up_Telescope
                 Console.WriteLine("ClientService error: {0}", ex.ToString());
             }
             
-        }
-
-        //remove invalid device
-        private void RemoveInvalidDevice()
-        {
-            foreach (string key in mDeviceConnections.Keys)
-            {
-                if (!mDeviceConnections[key].Poll(-1, SelectMode.SelectRead))
-                {
-                    mDeviceConnections.Remove(key);
-                }
-            }
         }
 
         //register device if first connect
@@ -235,24 +331,55 @@ namespace Follow_Up_Telescope
             try
             {
                 //resolve message
-                string deviceType, cmd, pos, mov, lt;
+                string deviceType, cmd, pos, mov, res, lt;
                 string[] cmdList = message.Split(',');
                 deviceType = cmdList[0];
 
-                if (deviceType != "RW")
-                    return;
-                cmd = cmdList[1];
-                if (cmd == "STATUS")
+                //解析滤光片转轮消息
+                if (deviceType == "RW")
                 {
-                    pos = cmdList[2];
-                    mov = cmdList[3];
-                    lt = cmdList[4];
-                }
-                else
-                    return;
+                    cmd = cmdList[1];
+                    if (cmd == "STATUS")
+                    {
+                        pos = cmdList[2];
+                        mov = cmdList[3];
+                        lt = cmdList[4];
+                        //更新状态
+                        mDeviceStatus.wheelStatus.curPos = Int32.Parse(pos);
+                        mDeviceStatus.wheelStatus.movStatus = Int32.Parse(mov);
+                    }
+                    else if (cmd == "MOVE")
+                    {
+                        pos = cmdList[2];
+                        res = cmdList[3];
+                        lt = cmdList[4];
+                        //接收消息策略
+                    }
+                    else if (cmd == "HOUSEKEEPING")
+                    {
+                        lt = cmdList[2];
+                        //housekeeping策略
+                    }
+                    else
+                        return;
 
-                mDeviceStatus.wheelStatus.curPos = Int32.Parse(pos);
-                mDeviceStatus.wheelStatus.movStatus = Int32.Parse(mov);
+                }
+                //解析CCD消息
+                else if (deviceType == "RC")
+                {
+                    cmd = cmdList[1];
+                }
+                //解析Mount消息
+                else if (deviceType == "RM")
+                {
+                    cmd = cmdList[1];
+                }
+                //解析Focuser消息
+                else if (deviceType == "RF")
+                {
+                    cmd = cmdList[1];
+                }
+
             }
             catch (System.Exception ex)
             {

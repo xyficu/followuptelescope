@@ -8,7 +8,6 @@ using System.Text;
 using System.Windows.Forms;
 using System.Threading;
 using System.Net.Sockets;
-using System.Drawing;
 
 namespace Follow_Up_Telescope
 {
@@ -51,26 +50,26 @@ namespace Follow_Up_Telescope
         {
             if (fut != null && fut.mDeviceConnections.ContainsKey("WHEEL"))
             {
-                labelWConnStatus.ForeColor = Color.Green;
-                labelWConnStatus.Text = "Connected！";
+                labelWMovStat.ForeColor = Color.Green;
+                labelWMovStat.Text = "Connected！";
             }
             else 
             {
-                labelWConnStatus.ForeColor = Color.Red;
-                labelWConnStatus.Text = "Not connected.";
+                labelWMovStat.ForeColor = Color.Red;
+                labelWMovStat.Text = "Not connected.";
             }
 
 
             labelWCurPos.Text = deviceStatus.wheelStatus.curPos.ToString();
             if (deviceStatus.wheelStatus.movStatus == 1)
             {
-                labelWMovStatus.ForeColor = Color.Red;
-                labelWMovStatus.Text = "Moving...";
+                labelWConStatus.ForeColor = Color.Red;
+                labelWConStatus.Text = "Moving...";
             }
             else
             {
-                labelWMovStatus.ForeColor = Color.Black;
-                labelWMovStatus.Text = "Stopped.";
+                labelWConStatus.ForeColor = Color.Black;
+                labelWConStatus.Text = "Stopped.";
             }
             
         }
