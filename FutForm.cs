@@ -38,6 +38,7 @@ namespace Follow_Up_Telescope
         private FutTcpServer fut;
         private DeviceParams deviceParams;
         private Thread futServerThread;
+        private StartObs frmStartObs;
 
         public FormFUTMain()
         {
@@ -54,12 +55,18 @@ namespace Follow_Up_Telescope
 
             //enable timer to update status per 100ms
             timerUpdateStatus.Enabled = true;
+
+            //初始化观测界面窗口
+            frmStartObs = new StartObs(fut.mDeviceConnections, deviceParams);
         }
 
 
         private void FormFUTMain_Load(object sender, EventArgs e)
         {
-
+            groupBoxCCD.ForeColor = Color.Blue;
+            groupBoxFocuser.ForeColor = Color.Blue;
+            groupBoxMount.ForeColor = Color.Blue;
+            groupBoxWheel.ForeColor = Color.Blue;
         }
 
         public void StartFutServer()
@@ -193,25 +200,25 @@ namespace Follow_Up_Telescope
             switch (deviceParams.mountParams.stat)
             {
                 case TS_Stopped:
-                    labelWMovStat.Text = "Stopped";
+                    labelMMovStat.Text = "Stopped";
                     break;
                 case TS_Homing:
-                    labelWMovStat.Text = "Homing...";
+                    labelMMovStat.Text = "Homing...";
                     break;
                 case TS_Homed:
-                    labelWMovStat.Text = "Homed";
+                    labelMMovStat.Text = "Homed";
                     break;
                 case TS_Slewing:
-                    labelWMovStat.Text = "Slewing...";
+                    labelMMovStat.Text = "Slewing...";
                     break;
                 case TS_Tracking:
-                    labelWMovStat.Text = "Tracking...";
+                    labelMMovStat.Text = "Tracking...";
                     break;
                 case TS_Parking:
-                    labelWMovStat.Text = "Parking...";
+                    labelMMovStat.Text = "Parking...";
                     break;
                 case TS_Parked:
-                    labelWMovStat.Text = "Parked";
+                    labelMMovStat.Text = "Parked";
                     break;
                 default:
                     break;
@@ -257,7 +264,11 @@ namespace Follow_Up_Telescope
 
         private void 开始观测ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-
+            if (frmStartObs!=null)
+            {
+                frmStartObs.Show();
+                frmStartObs.Focus();
+            }
         }
 
 

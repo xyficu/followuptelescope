@@ -32,40 +32,13 @@ namespace Follow_Up_Telescope
             mDeviceConnections = new Dictionary<string, Socket>();
             mDeviceParams = dev;
 
-            refreshFreq = 1000;
+            refreshFreq = 200;
             refreshThread = new Thread(new ThreadStart(RefreshStatus));
             refreshThread.IsBackground = true;
             refreshThread.Start();
             
-            //removeFreq = 1000;
-            //removeInvalidDeviceThread = new Thread(new ThreadStart(RemoveInvalidDevice));
-            //removeInvalidDeviceThread.IsBackground = true;
-            //removeInvalidDeviceThread.Start();
-
-            //m_tmrRmDev = new Timer(new TimerCallback(RemoveInvalidDevice), null, 0, 5000);
         }
 
-
-        //remove invalid device
-        //private void RemoveInvalidDevice(object o)
-        //{
-        //    try
-        //    {
-        //        foreach (string key in mDeviceConnections.Keys)
-        //        {
-        //            if (mDeviceConnections[key].Poll(-1, SelectMode.SelectError))
-        //            {
-        //                mDeviceConnections.Remove(key);
-        //            }
-        //        }
-
-        //    }
-        //    catch (System.Exception ex)
-        //    {
-        //        Console.WriteLine(ex.ToString());
-        //    }
-
-        //}
 
         //获取local time
         private string GetLocalTime()

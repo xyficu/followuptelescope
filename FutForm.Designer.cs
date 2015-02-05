@@ -32,8 +32,10 @@
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.系统ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.退出EToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.optionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.开始观测ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.关于AboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.groupBoxMount = new System.Windows.Forms.GroupBox();
             this.label33 = new System.Windows.Forms.Label();
             this.label21 = new System.Windows.Forms.Label();
             this.label20 = new System.Windows.Forms.Label();
@@ -56,10 +58,12 @@
             this.labelMRa = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
-            this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.groupBoxCCD = new System.Windows.Forms.GroupBox();
             this.progressBarCAcq = new System.Windows.Forms.ProgressBar();
+            this.labelCConStat = new System.Windows.Forms.Label();
             this.labelCCoolerStat = new System.Windows.Forms.Label();
             this.labelCCurTemp = new System.Windows.Forms.Label();
+            this.label1111 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
             this.labelCAcqStat = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
@@ -70,7 +74,7 @@
             this.label38 = new System.Windows.Forms.Label();
             this.labelCImgSavPath = new System.Windows.Forms.Label();
             this.label36 = new System.Windows.Forms.Label();
-            this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.groupBoxWheel = new System.Windows.Forms.GroupBox();
             this.labelWMovStat = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.labelWConStatus = new System.Windows.Forms.Label();
@@ -79,7 +83,7 @@
             this.labelWCurPos = new System.Windows.Forms.Label();
             this.label34 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
-            this.groupBox5 = new System.Windows.Forms.GroupBox();
+            this.groupBoxFocuser = new System.Windows.Forms.GroupBox();
             this.labelFConStat = new System.Windows.Forms.Label();
             this.label30 = new System.Windows.Forms.Label();
             this.labelFCurTemp = new System.Windows.Forms.Label();
@@ -89,15 +93,11 @@
             this.labelFCurPos = new System.Windows.Forms.Label();
             this.label24 = new System.Windows.Forms.Label();
             this.timerUpdateStatus = new System.Windows.Forms.Timer(this.components);
-            this.label1111 = new System.Windows.Forms.Label();
-            this.labelCConStat = new System.Windows.Forms.Label();
-            this.optionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.开始观测ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
-            this.groupBox2.SuspendLayout();
-            this.groupBox3.SuspendLayout();
-            this.groupBox4.SuspendLayout();
-            this.groupBox5.SuspendLayout();
+            this.groupBoxMount.SuspendLayout();
+            this.groupBoxCCD.SuspendLayout();
+            this.groupBoxWheel.SuspendLayout();
+            this.groupBoxFocuser.SuspendLayout();
             this.SuspendLayout();
             // 
             // menuStrip1
@@ -126,43 +126,58 @@
             this.退出EToolStripMenuItem.Size = new System.Drawing.Size(96, 22);
             this.退出EToolStripMenuItem.Text = "&Exit";
             // 
+            // optionToolStripMenuItem
+            // 
+            this.optionToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.开始观测ToolStripMenuItem});
+            this.optionToolStripMenuItem.Name = "optionToolStripMenuItem";
+            this.optionToolStripMenuItem.Size = new System.Drawing.Size(60, 21);
+            this.optionToolStripMenuItem.Text = "&Option";
+            // 
+            // 开始观测ToolStripMenuItem
+            // 
+            this.开始观测ToolStripMenuItem.Name = "开始观测ToolStripMenuItem";
+            this.开始观测ToolStripMenuItem.Size = new System.Drawing.Size(124, 22);
+            this.开始观测ToolStripMenuItem.Text = "开始观测";
+            this.开始观测ToolStripMenuItem.Click += new System.EventHandler(this.开始观测ToolStripMenuItem_Click);
+            // 
             // 关于AboutToolStripMenuItem
             // 
             this.关于AboutToolStripMenuItem.Name = "关于AboutToolStripMenuItem";
             this.关于AboutToolStripMenuItem.Size = new System.Drawing.Size(55, 21);
             this.关于AboutToolStripMenuItem.Text = "&About";
             // 
-            // groupBox2
+            // groupBoxMount
             // 
-            this.groupBox2.Controls.Add(this.label33);
-            this.groupBox2.Controls.Add(this.label21);
-            this.groupBox2.Controls.Add(this.label20);
-            this.groupBox2.Controls.Add(this.labelMDate);
-            this.groupBox2.Controls.Add(this.label18);
-            this.groupBox2.Controls.Add(this.labelMSt);
-            this.groupBox2.Controls.Add(this.labelMMovStat);
-            this.groupBox2.Controls.Add(this.label16);
-            this.groupBox2.Controls.Add(this.labelMUt);
-            this.groupBox2.Controls.Add(this.label14);
-            this.groupBox2.Controls.Add(this.labelMAlt);
-            this.groupBox2.Controls.Add(this.label12);
-            this.groupBox2.Controls.Add(this.labelMAz);
-            this.groupBox2.Controls.Add(this.label10);
-            this.groupBox2.Controls.Add(this.labelMConStat);
-            this.groupBox2.Controls.Add(this.labelMTarDec);
-            this.groupBox2.Controls.Add(this.labelMDec);
-            this.groupBox2.Controls.Add(this.labelMTarRa);
-            this.groupBox2.Controls.Add(this.label8);
-            this.groupBox2.Controls.Add(this.labelMRa);
-            this.groupBox2.Controls.Add(this.label6);
-            this.groupBox2.Controls.Add(this.label4);
-            this.groupBox2.Font = new System.Drawing.Font("宋体", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.groupBox2.Location = new System.Drawing.Point(12, 38);
-            this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(239, 379);
-            this.groupBox2.TabIndex = 2;
-            this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "转台状态";
+            this.groupBoxMount.Controls.Add(this.label33);
+            this.groupBoxMount.Controls.Add(this.label21);
+            this.groupBoxMount.Controls.Add(this.label20);
+            this.groupBoxMount.Controls.Add(this.labelMDate);
+            this.groupBoxMount.Controls.Add(this.label18);
+            this.groupBoxMount.Controls.Add(this.labelMSt);
+            this.groupBoxMount.Controls.Add(this.labelMMovStat);
+            this.groupBoxMount.Controls.Add(this.label16);
+            this.groupBoxMount.Controls.Add(this.labelMUt);
+            this.groupBoxMount.Controls.Add(this.label14);
+            this.groupBoxMount.Controls.Add(this.labelMAlt);
+            this.groupBoxMount.Controls.Add(this.label12);
+            this.groupBoxMount.Controls.Add(this.labelMAz);
+            this.groupBoxMount.Controls.Add(this.label10);
+            this.groupBoxMount.Controls.Add(this.labelMConStat);
+            this.groupBoxMount.Controls.Add(this.labelMTarDec);
+            this.groupBoxMount.Controls.Add(this.labelMDec);
+            this.groupBoxMount.Controls.Add(this.labelMTarRa);
+            this.groupBoxMount.Controls.Add(this.label8);
+            this.groupBoxMount.Controls.Add(this.labelMRa);
+            this.groupBoxMount.Controls.Add(this.label6);
+            this.groupBoxMount.Controls.Add(this.label4);
+            this.groupBoxMount.Font = new System.Drawing.Font("宋体", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.groupBoxMount.Location = new System.Drawing.Point(12, 38);
+            this.groupBoxMount.Name = "groupBoxMount";
+            this.groupBoxMount.Size = new System.Drawing.Size(239, 379);
+            this.groupBoxMount.TabIndex = 2;
+            this.groupBoxMount.TabStop = false;
+            this.groupBoxMount.Text = "转台状态";
             // 
             // label33
             // 
@@ -192,7 +207,7 @@
             this.label20.Name = "label20";
             this.label20.Size = new System.Drawing.Size(77, 14);
             this.label20.TabIndex = 16;
-            this.label20.Text = "目标赤经：";
+            this.label20.Text = "目标时角：";
             // 
             // labelMDate
             // 
@@ -372,7 +387,7 @@
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(77, 14);
             this.label6.TabIndex = 2;
-            this.label6.Text = "转台赤经：";
+            this.label6.Text = "转台时角：";
             // 
             // label4
             // 
@@ -384,30 +399,30 @@
             this.label4.TabIndex = 0;
             this.label4.Text = "移动状态：";
             // 
-            // groupBox3
+            // groupBoxCCD
             // 
-            this.groupBox3.Controls.Add(this.progressBarCAcq);
-            this.groupBox3.Controls.Add(this.labelCConStat);
-            this.groupBox3.Controls.Add(this.labelCCoolerStat);
-            this.groupBox3.Controls.Add(this.labelCCurTemp);
-            this.groupBox3.Controls.Add(this.label1111);
-            this.groupBox3.Controls.Add(this.label7);
-            this.groupBox3.Controls.Add(this.labelCAcqStat);
-            this.groupBox3.Controls.Add(this.label5);
-            this.groupBox3.Controls.Add(this.label42);
-            this.groupBox3.Controls.Add(this.labelCCurNo);
-            this.groupBox3.Controls.Add(this.label40);
-            this.groupBox3.Controls.Add(this.labelCAmt);
-            this.groupBox3.Controls.Add(this.label38);
-            this.groupBox3.Controls.Add(this.labelCImgSavPath);
-            this.groupBox3.Controls.Add(this.label36);
-            this.groupBox3.Font = new System.Drawing.Font("宋体", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.groupBox3.Location = new System.Drawing.Point(565, 38);
-            this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(258, 297);
-            this.groupBox3.TabIndex = 3;
-            this.groupBox3.TabStop = false;
-            this.groupBox3.Text = "CCD状态";
+            this.groupBoxCCD.Controls.Add(this.progressBarCAcq);
+            this.groupBoxCCD.Controls.Add(this.labelCConStat);
+            this.groupBoxCCD.Controls.Add(this.labelCCoolerStat);
+            this.groupBoxCCD.Controls.Add(this.labelCCurTemp);
+            this.groupBoxCCD.Controls.Add(this.label1111);
+            this.groupBoxCCD.Controls.Add(this.label7);
+            this.groupBoxCCD.Controls.Add(this.labelCAcqStat);
+            this.groupBoxCCD.Controls.Add(this.label5);
+            this.groupBoxCCD.Controls.Add(this.label42);
+            this.groupBoxCCD.Controls.Add(this.labelCCurNo);
+            this.groupBoxCCD.Controls.Add(this.label40);
+            this.groupBoxCCD.Controls.Add(this.labelCAmt);
+            this.groupBoxCCD.Controls.Add(this.label38);
+            this.groupBoxCCD.Controls.Add(this.labelCImgSavPath);
+            this.groupBoxCCD.Controls.Add(this.label36);
+            this.groupBoxCCD.Font = new System.Drawing.Font("宋体", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.groupBoxCCD.Location = new System.Drawing.Point(565, 38);
+            this.groupBoxCCD.Name = "groupBoxCCD";
+            this.groupBoxCCD.Size = new System.Drawing.Size(258, 297);
+            this.groupBoxCCD.TabIndex = 3;
+            this.groupBoxCCD.TabStop = false;
+            this.groupBoxCCD.Text = "CCD状态";
             // 
             // progressBarCAcq
             // 
@@ -415,6 +430,16 @@
             this.progressBarCAcq.Name = "progressBarCAcq";
             this.progressBarCAcq.Size = new System.Drawing.Size(165, 23);
             this.progressBarCAcq.TabIndex = 8;
+            // 
+            // labelCConStat
+            // 
+            this.labelCConStat.BackColor = System.Drawing.SystemColors.Control;
+            this.labelCConStat.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.labelCConStat.Location = new System.Drawing.Point(134, 215);
+            this.labelCConStat.Name = "labelCConStat";
+            this.labelCConStat.Size = new System.Drawing.Size(111, 21);
+            this.labelCConStat.TabIndex = 7;
+            this.labelCConStat.Text = "unknown";
             // 
             // labelCCoolerStat
             // 
@@ -435,6 +460,15 @@
             this.labelCCurTemp.Size = new System.Drawing.Size(111, 21);
             this.labelCCurTemp.TabIndex = 7;
             this.labelCCurTemp.Text = "unknown";
+            // 
+            // label1111
+            // 
+            this.label1111.AutoSize = true;
+            this.label1111.Location = new System.Drawing.Point(47, 218);
+            this.label1111.Name = "label1111";
+            this.label1111.Size = new System.Drawing.Size(77, 14);
+            this.label1111.TabIndex = 6;
+            this.label1111.Text = "网络连接：";
             // 
             // label7
             // 
@@ -530,23 +564,23 @@
             this.label36.TabIndex = 0;
             this.label36.Text = "图像路径：";
             // 
-            // groupBox4
+            // groupBoxWheel
             // 
-            this.groupBox4.Controls.Add(this.labelWMovStat);
-            this.groupBox4.Controls.Add(this.label2);
-            this.groupBox4.Controls.Add(this.labelWConStatus);
-            this.groupBox4.Controls.Add(this.label3);
-            this.groupBox4.Controls.Add(this.labelWCurColor);
-            this.groupBox4.Controls.Add(this.labelWCurPos);
-            this.groupBox4.Controls.Add(this.label34);
-            this.groupBox4.Controls.Add(this.label1);
-            this.groupBox4.Font = new System.Drawing.Font("宋体", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.groupBox4.Location = new System.Drawing.Point(272, 212);
-            this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(274, 185);
-            this.groupBox4.TabIndex = 4;
-            this.groupBox4.TabStop = false;
-            this.groupBox4.Text = "滤光片转轮状态";
+            this.groupBoxWheel.Controls.Add(this.labelWMovStat);
+            this.groupBoxWheel.Controls.Add(this.label2);
+            this.groupBoxWheel.Controls.Add(this.labelWConStatus);
+            this.groupBoxWheel.Controls.Add(this.label3);
+            this.groupBoxWheel.Controls.Add(this.labelWCurColor);
+            this.groupBoxWheel.Controls.Add(this.labelWCurPos);
+            this.groupBoxWheel.Controls.Add(this.label34);
+            this.groupBoxWheel.Controls.Add(this.label1);
+            this.groupBoxWheel.Font = new System.Drawing.Font("宋体", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.groupBoxWheel.Location = new System.Drawing.Point(272, 212);
+            this.groupBoxWheel.Name = "groupBoxWheel";
+            this.groupBoxWheel.Size = new System.Drawing.Size(274, 185);
+            this.groupBoxWheel.TabIndex = 4;
+            this.groupBoxWheel.TabStop = false;
+            this.groupBoxWheel.Text = "滤光片转轮状态";
             // 
             // labelWMovStat
             // 
@@ -620,23 +654,23 @@
             this.label1.TabIndex = 0;
             this.label1.Text = "当前位置：";
             // 
-            // groupBox5
+            // groupBoxFocuser
             // 
-            this.groupBox5.Controls.Add(this.labelFConStat);
-            this.groupBox5.Controls.Add(this.label30);
-            this.groupBox5.Controls.Add(this.labelFCurTemp);
-            this.groupBox5.Controls.Add(this.label28);
-            this.groupBox5.Controls.Add(this.labelFMovStat);
-            this.groupBox5.Controls.Add(this.label26);
-            this.groupBox5.Controls.Add(this.labelFCurPos);
-            this.groupBox5.Controls.Add(this.label24);
-            this.groupBox5.Font = new System.Drawing.Font("宋体", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.groupBox5.Location = new System.Drawing.Point(272, 38);
-            this.groupBox5.Name = "groupBox5";
-            this.groupBox5.Size = new System.Drawing.Size(274, 168);
-            this.groupBox5.TabIndex = 5;
-            this.groupBox5.TabStop = false;
-            this.groupBox5.Text = "调焦器状态";
+            this.groupBoxFocuser.Controls.Add(this.labelFConStat);
+            this.groupBoxFocuser.Controls.Add(this.label30);
+            this.groupBoxFocuser.Controls.Add(this.labelFCurTemp);
+            this.groupBoxFocuser.Controls.Add(this.label28);
+            this.groupBoxFocuser.Controls.Add(this.labelFMovStat);
+            this.groupBoxFocuser.Controls.Add(this.label26);
+            this.groupBoxFocuser.Controls.Add(this.labelFCurPos);
+            this.groupBoxFocuser.Controls.Add(this.label24);
+            this.groupBoxFocuser.Font = new System.Drawing.Font("宋体", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.groupBoxFocuser.Location = new System.Drawing.Point(272, 38);
+            this.groupBoxFocuser.Name = "groupBoxFocuser";
+            this.groupBoxFocuser.Size = new System.Drawing.Size(274, 168);
+            this.groupBoxFocuser.TabIndex = 5;
+            this.groupBoxFocuser.TabStop = false;
+            this.groupBoxFocuser.Text = "调焦器状态";
             // 
             // labelFConStat
             // 
@@ -714,49 +748,15 @@
             // 
             this.timerUpdateStatus.Tick += new System.EventHandler(this.timerUpdateStatus_Tick);
             // 
-            // label1111
-            // 
-            this.label1111.AutoSize = true;
-            this.label1111.Location = new System.Drawing.Point(47, 218);
-            this.label1111.Name = "label1111";
-            this.label1111.Size = new System.Drawing.Size(77, 14);
-            this.label1111.TabIndex = 6;
-            this.label1111.Text = "网络连接：";
-            // 
-            // labelCConStat
-            // 
-            this.labelCConStat.BackColor = System.Drawing.SystemColors.Control;
-            this.labelCConStat.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.labelCConStat.Location = new System.Drawing.Point(134, 215);
-            this.labelCConStat.Name = "labelCConStat";
-            this.labelCConStat.Size = new System.Drawing.Size(111, 21);
-            this.labelCConStat.TabIndex = 7;
-            this.labelCConStat.Text = "unknown";
-            // 
-            // optionToolStripMenuItem
-            // 
-            this.optionToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.开始观测ToolStripMenuItem});
-            this.optionToolStripMenuItem.Name = "optionToolStripMenuItem";
-            this.optionToolStripMenuItem.Size = new System.Drawing.Size(60, 21);
-            this.optionToolStripMenuItem.Text = "&Option";
-            // 
-            // 开始观测ToolStripMenuItem
-            // 
-            this.开始观测ToolStripMenuItem.Name = "开始观测ToolStripMenuItem";
-            this.开始观测ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.开始观测ToolStripMenuItem.Text = "开始观测";
-            this.开始观测ToolStripMenuItem.Click += new System.EventHandler(this.开始观测ToolStripMenuItem_Click);
-            // 
             // FormFUTMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(964, 514);
-            this.Controls.Add(this.groupBox5);
-            this.Controls.Add(this.groupBox4);
-            this.Controls.Add(this.groupBox3);
-            this.Controls.Add(this.groupBox2);
+            this.Controls.Add(this.groupBoxFocuser);
+            this.Controls.Add(this.groupBoxWheel);
+            this.Controls.Add(this.groupBoxCCD);
+            this.Controls.Add(this.groupBoxMount);
             this.Controls.Add(this.menuStrip1);
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "FormFUTMain";
@@ -764,14 +764,14 @@
             this.Load += new System.EventHandler(this.FormFUTMain_Load);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
-            this.groupBox2.ResumeLayout(false);
-            this.groupBox2.PerformLayout();
-            this.groupBox3.ResumeLayout(false);
-            this.groupBox3.PerformLayout();
-            this.groupBox4.ResumeLayout(false);
-            this.groupBox4.PerformLayout();
-            this.groupBox5.ResumeLayout(false);
-            this.groupBox5.PerformLayout();
+            this.groupBoxMount.ResumeLayout(false);
+            this.groupBoxMount.PerformLayout();
+            this.groupBoxCCD.ResumeLayout(false);
+            this.groupBoxCCD.PerformLayout();
+            this.groupBoxWheel.ResumeLayout(false);
+            this.groupBoxWheel.PerformLayout();
+            this.groupBoxFocuser.ResumeLayout(false);
+            this.groupBoxFocuser.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -783,10 +783,10 @@
         private System.Windows.Forms.ToolStripMenuItem 系统ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem 退出EToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem 关于AboutToolStripMenuItem;
-        private System.Windows.Forms.GroupBox groupBox2;
-        private System.Windows.Forms.GroupBox groupBox3;
-        private System.Windows.Forms.GroupBox groupBox4;
-        private System.Windows.Forms.GroupBox groupBox5;
+        private System.Windows.Forms.GroupBox groupBoxMount;
+        private System.Windows.Forms.GroupBox groupBoxCCD;
+        private System.Windows.Forms.GroupBox groupBoxWheel;
+        private System.Windows.Forms.GroupBox groupBoxFocuser;
         private System.Windows.Forms.Label labelWConStatus;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label labelWCurPos;
