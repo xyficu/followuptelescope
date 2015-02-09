@@ -13,32 +13,34 @@ namespace Follow_Up_Telescope
     /// which is used for controlling telescope by communicating 
     /// with mount, focuser, ccd and filter wheel
     /// </summary>
-    class FutTcpServer
+    class FutNet
     {
         //save device connections
         public Dictionary<string, Socket> mDeviceConnections;
         //save device status
         private DeviceParams mDeviceParams;
-        private Socket mServer;
+        public Socket mServer;
         private Thread refreshThread;
         private int refreshFreq;
-        private Thread removeInvalidDeviceThread;
-        private int removeFreq;
-        Timer m_tmrRmDev;
         ClientThread newClient;
 
-        public FutTcpServer(DeviceParams dev)
+        public FutNet(DeviceParams dev)
         {
             mDeviceConnections = new Dictionary<string, Socket>();
             mDeviceParams = dev;
 
-            refreshFreq = 200;
+            refreshFreq = 100;
             refreshThread = new Thread(new ThreadStart(RefreshStatus));
             refreshThread.IsBackground = true;
             refreshThread.Start();
             
         }
 
+        ~FutNet()
+        {
+            
+
+        }
 
         //获取local time
         private string GetLocalTime()
@@ -153,6 +155,7 @@ namespace Follow_Up_Telescope
                     //pass client method to thread
                     Thread newthread = new Thread(new ThreadStart(newClient.ClientService));
                     //start thread message service
+                    newthread.IsBackground = true;
                     newthread.Start();
                 }
             }
@@ -401,6 +404,7 @@ namespace Follow_Up_Telescope
                         mDeviceParams.ccdParams.acqProc = Double.Parse(acqProc);
                         mDeviceParams.ccdParams.curNumb = Int32.Parse(curNumb);
                         mDeviceParams.ccdParams.imgAmt = Int32.Parse(imgAmt);
+                        
                     }
                     else if (cmd == "GETIMG")
                     {

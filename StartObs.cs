@@ -39,11 +39,16 @@ namespace Follow_Up_Telescope
         DeviceParams deviceParams;
         Thread obsThd;
         List<ListViewItem> targetList;
-        public StartObs(Dictionary<string, Socket> _deviceConnections, DeviceParams _deviceParams)
+        ObsTar obsTar;
+        System.Timers.Timer tmrObs;
+        Socket futSkt;
+        public StartObs(Dictionary<string, Socket> _deviceConnections, DeviceParams _deviceParams, ObsTar _obsTar, Socket _futSkt)
         {
             InitializeComponent();
             deviceConnections = _deviceConnections;
             deviceParams = _deviceParams;
+            obsTar = _obsTar;
+            futSkt = _futSkt;
 
             textBoxRA.Text = "5:00:00";
             textBoxDEC.Text = "40:00:00";
@@ -56,6 +61,119 @@ namespace Follow_Up_Telescope
             //backgroundWorker = new BackgroundWorker();
             //backgroundWorker.WorkerReportsProgress = true;
             //backgroundWorker.DoWork += new DoWorkEventHandler(ObsTargetList);
+
+            tmrObs = new System.Timers.Timer(500);
+            tmrObs.Elapsed += new System.Timers.ElapsedEventHandler(CheckObsTar);
+            tmrObs.AutoReset = true;
+            tmrObs.Enabled = true;
+
+        }
+
+        private void CheckObsTar(object o, System.Timers.ElapsedEventArgs e)
+        {
+            if (obsTar.type != 0 && deviceParams.teleStat == 0)
+            {
+                //type == 2 表示初始化用例，开启制冷器到-80，转台转到天顶位置，
+                //创建以当天名字命名的目录（/data/yyyymmdd），拍摄一张3s的照片
+                if (obsTar.type == 2)
+                {
+                    obsTar.type = 0;
+                    Socket value;
+                    byte[] buf = new byte[1024];
+                    string cmd = "";
+                    string lt = "";
+                    string path="";
+                    string res = "";
+                    if (deviceConnections.TryGetValue("CCD", out value))
+                    {
+                        //做初始化
+                        //设置制冷温度-80
+                        lt = GetLocalTime();
+                        cmd = "C,SETCOOLERTEMP,-80," + lt;
+                        buf = Encoding.ASCII.GetBytes(cmd);
+                        value.Send(buf);
+                        Thread.Sleep(1000);
+                        
+                        //开启制冷器
+                        cmd = "C,SETCOOLERSWITCH,1," + lt;
+                        buf = Encoding.ASCII.GetBytes(cmd);
+                        value.Send(buf);
+                        Thread.Sleep(1000);
+                        if (deviceParams.ccdParams.coolerSwitch == false)
+                        {
+                            res = "1";
+                            //发送初始化失败消息，并返回
+                            cmd = "R" + obsTar.deviceType + ",INIT," + res + "," + lt;
+                            buf = Encoding.ASCII.GetBytes(cmd);
+                            futSkt.Send(buf);
+                            return;
+                        }
+                        //创建目录/data/yyyymmdd/
+                        path = "/data/"+lt.Substring(0, 8);
+                        cmd = "C,MKPATH," + path + "," + lt;
+                        buf = Encoding.ASCII.GetBytes(cmd);
+                        value.Send(buf);
+                        Thread.Sleep(1000);
+                        
+                        //设置为图像存储目录
+                        cmd = "C,PATH," + path + "," + lt;
+                        buf = Encoding.ASCII.GetBytes(cmd);
+                        value.Send(buf);
+                        Thread.Sleep(1000);
+                        if (deviceParams.ccdParams.imgPath != path)
+                        {
+                            res = "2";
+                            //发送初始化失败消息，并返回
+                            cmd = "R" + obsTar.deviceType + ",INIT," + res + "," + lt;
+                            buf = Encoding.ASCII.GetBytes(cmd);
+                            futSkt.Send(buf);
+                            return;
+                        }
+                        //转动到天顶位置拍摄一幅3s的图
+                        ra = obsTar.ra;
+                        dec = obsTar.dec;
+                        color = int.Parse(obsTar.color);
+                        time = obsTar.expTime;
+                        amount = obsTar.amount;
+                        obsThd = new Thread(new ThreadStart(ObsTarget));
+                        obsThd.IsBackground = true;
+                        obsThd.Start();
+                        res = "0";
+                        //发送初始化成功消息，并返回
+                        cmd = "R" + obsTar.deviceType + ",INIT," + res + "," + lt;
+                        buf = Encoding.ASCII.GetBytes(cmd);
+                        futSkt.Send(buf);
+                    }
+                }
+                    //type==1表示通常目标，执行通常观测步骤
+                else if (obsTar.type == 1)
+                {
+                    obsTar.type = 0;
+                    Socket value;
+                    byte[] buf = new byte[1024];
+                    string cmd = "";
+                    string lt = "";
+                    string path = "";
+                    string res = "";
+
+                    ra = obsTar.ra;
+                    dec = obsTar.dec;
+                    color = int.Parse(obsTar.color);
+                    time = obsTar.expTime;
+                    amount = obsTar.amount;
+                    obsThd = new Thread(new ThreadStart(ObsTarget));
+                    obsThd.IsBackground = true;
+                    obsThd.Start();
+                    res = "0";
+                    lt = GetLocalTime();
+                    cmd = "R" + obsTar.deviceType + ",OBS," + obsTar.id.ToString() + "," + obsTar.ra
+                         + "," + obsTar.dec + "," + obsTar.color + "," + obsTar.expTime.ToString()
+                         + "," + obsTar.amount + "," + res + "," + lt;
+                    buf = Encoding.ASCII.GetBytes(cmd);
+                    futSkt.Send(buf);
+                }
+
+            }
         }
 
         const int U = 0;
@@ -73,7 +191,6 @@ namespace Follow_Up_Telescope
         int color = 0;
         double time = 0.0;
         int amount = 1;
-
         public void ObsTarget()
         {
             Socket value;
@@ -82,26 +199,28 @@ namespace Follow_Up_Telescope
             string lt="";
 
             //开启制冷器到-80摄氏度
-            if (deviceConnections.TryGetValue("CCD", out value))
-            {
-                lt=GetLocalTime();
-                cmd="C,SETCOOLERTEMP,-80,"+lt;
-                buf = Encoding.ASCII.GetBytes(cmd);
-                value.Send(buf);
-            }
-            if (deviceConnections.TryGetValue("CCD", out value))
-            {
-                lt = GetLocalTime();
-                cmd = "C,SETCOOLERSWITCH,1," + lt;
-                buf = Encoding.ASCII.GetBytes(cmd);
-                value.Send(buf);
-            }
+            //if (deviceConnections.TryGetValue("CCD", out value))
+            //{
+            //    lt=GetLocalTime();
+            //    cmd="C,SETCOOLERTEMP,-80,"+lt;
+            //    buf = Encoding.ASCII.GetBytes(cmd);
+            //    value.Send(buf);
+            //}
+            //if (deviceConnections.TryGetValue("CCD", out value))
+            //{
+            //    lt = GetLocalTime();
+            //    cmd = "C,SETCOOLERSWITCH,1," + lt;
+            //    buf = Encoding.ASCII.GetBytes(cmd);
+            //    value.Send(buf);
+            //}
             //检查制冷温度是否到位
-            while (deviceParams.ccdParams.temp>-75)
-            {
-                System.Threading.Thread.Sleep(1000);
-            }
+            //while (deviceParams.ccdParams.temp>-75)
+            //{
+            //    System.Threading.Thread.Sleep(1000);
+            //}
 
+            //设置望远镜处于busy状态
+            deviceParams.teleStat = 1;
 
             //转动转台
             if (deviceConnections.TryGetValue("MOUNT", out value))
@@ -140,7 +259,9 @@ namespace Follow_Up_Telescope
             if (deviceConnections.TryGetValue("CCD", out value))
             {
                 lt = GetLocalTime();
-                cmd = "C,GETIMG," + ra + "_" + dec + ",1," + time.ToString() + "," + amount + "," + lt;
+                cmd = "C,GETIMG," + ra + "_" + dec + ",1," + time.ToString() + "," + amount + "," +
+                      ra + "," + dec + "," + deviceParams.mountParams.ut + "," + deviceParams.mountParams.st + "," +
+                      "S1" + "," + "OBJECT" + "," + deviceParams.wheelParams.curPos.ToString() + "," + lt;
                 buf = Encoding.ASCII.GetBytes(cmd);
                 value.Send(buf);
             }
@@ -152,6 +273,8 @@ namespace Follow_Up_Telescope
                 Thread.Sleep(1000);
                 if (deviceParams.ccdParams.acqStat == 0) count++;
             }
+
+            deviceParams.teleStat = 0;
         }
 
         //获取local time
@@ -173,6 +296,7 @@ namespace Follow_Up_Telescope
         {
 
             //取出listview中所有的item
+            targetList.Clear();
             foreach (ListViewItem item in listView1.Items)
             {
                 targetList.Add(item);
@@ -189,7 +313,12 @@ namespace Follow_Up_Telescope
         /// <param name="e"></param>
         private void ObsTargetList()
         {
-
+            try
+            {
+                if (deviceParams.teleStat == 1)
+                {
+                    return;
+                }
                 foreach (ListViewItem item in targetList)
                 {
                     //从list中取出一个源，赋值给变量
@@ -201,8 +330,12 @@ namespace Follow_Up_Telescope
                     amount = int.Parse(item.SubItems[5].Text);
                     ObsTarget();
                 }
-                   
-
+            }
+            catch (System.Exception ex)
+            {
+                String err = ex.Message;
+            }
+                
         }
 
         private void AddTarget(string ra, string dec, int color, double time, int amount)

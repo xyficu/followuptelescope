@@ -207,7 +207,7 @@
             this.label20.Name = "label20";
             this.label20.Size = new System.Drawing.Size(77, 14);
             this.label20.TabIndex = 16;
-            this.label20.Text = "目标时角：";
+            this.label20.Text = "目标赤经：";
             // 
             // labelMDate
             // 
@@ -307,7 +307,7 @@
             this.labelMAz.Name = "labelMAz";
             this.labelMAz.Size = new System.Drawing.Size(100, 21);
             this.labelMAz.TabIndex = 7;
-            this.labelMAz.Text = "+000:00.00.0";
+            this.labelMAz.Text = "+000:00:00.0";
             // 
             // label10
             // 
@@ -387,7 +387,7 @@
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(77, 14);
             this.label6.TabIndex = 2;
-            this.label6.Text = "转台时角：";
+            this.label6.Text = "转台赤经：";
             // 
             // label4
             // 
@@ -515,7 +515,7 @@
             this.labelCCurNo.Name = "labelCCurNo";
             this.labelCCurNo.Size = new System.Drawing.Size(111, 21);
             this.labelCCurNo.TabIndex = 5;
-            this.labelCCurNo.Text = "empty";
+            this.labelCCurNo.Text = "0";
             // 
             // label40
             // 

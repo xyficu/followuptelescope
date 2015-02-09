@@ -35,10 +35,16 @@ namespace Follow_Up_Telescope
         private const int TS_Parking = 7;
         private const int TS_Parked = 8;
 
-        private FutTcpServer fut;
+        //望远镜单元网络信息收发
+        private FutNet fut;
         private DeviceParams deviceParams;
         private Thread futServerThread;
         private StartObs frmStartObs;
+        private ObsTar obsTar;
+        
+        //望远镜组总控
+        private FutTwin futTwin;
+        private Thread futTwinThread;
 
         public FormFUTMain()
         {
@@ -46,18 +52,26 @@ namespace Follow_Up_Telescope
 
             //initial data
             deviceParams = new DeviceParams();
-            fut = new FutTcpServer(deviceParams);
+            fut = new FutNet(deviceParams);
+            obsTar = new ObsTar();
+            obsTar.id = -1;
 
-            //start tcp server
+            //开启设备信息交换
             futServerThread = new Thread(new ThreadStart(StartFutServer));
             futServerThread.IsBackground = true;
             futServerThread.Start();
+
+            //开启总控信息交换
+            futTwin = new FutTwin(deviceParams, obsTar);
+            futTwinThread = new Thread(new ThreadStart(futTwin.ConnectToHost));
+            futTwinThread.IsBackground = true;
+            futTwinThread.Start();
 
             //enable timer to update status per 100ms
             timerUpdateStatus.Enabled = true;
 
             //初始化观测界面窗口
-            frmStartObs = new StartObs(fut.mDeviceConnections, deviceParams);
+            frmStartObs = new StartObs(fut.mDeviceConnections, deviceParams, obsTar, futTwin.m_sktFut);
         }
 
 
@@ -90,48 +104,49 @@ namespace Follow_Up_Telescope
 
 
             labelWCurPos.Text = (deviceParams.wheelParams.curPos + 1).ToString();
-            switch (deviceParams.wheelParams.curPos)
-            {
-                case 0:
-                    labelWCurColor.Text = "U";
-                    break;
-                case 1:
-                    labelWCurColor.Text = "B";
-                    break;
-                case 2:
-                    labelWCurColor.Text = "V";
-                    break;
-                case 3:
-                    labelWCurColor.Text = "R";
-                    break;
-                case 4:
-                    labelWCurColor.Text = "I";
-                    break;
-                case 5:
-                    labelWCurColor.Text = "L";
-                    break;
-                case 6:
-                    labelWCurColor.Text = "Red";
-                    break;
-                case 7:
-                    labelWCurColor.Text = "Green";
-                    break;
-                case 8:
-                    labelWCurColor.Text = "Blue";
-                    break;
-                case 9:
-                    labelWCurColor.Text = "empty";
-                    break;
-                case 10:
-                    labelWCurColor.Text = "empty";
-                    break;
-                case 11:
-                    labelWCurColor.Text = "empty";
-                    break;
-                default:
-                    labelWCurColor.Text = "unknown";
-                    break;
-            }
+            labelWCurColor.Text = (deviceParams.wheelParams.curPos + 1).ToString();
+            //switch (deviceParams.wheelParams.curPos)
+            //{
+            //    case 0:
+            //        labelWCurColor.Text = "U";
+            //        break;
+            //    case 1:
+            //        labelWCurColor.Text = "B";
+            //        break;
+            //    case 2:
+            //        labelWCurColor.Text = "V";
+            //        break;
+            //    case 3:
+            //        labelWCurColor.Text = "R";
+            //        break;
+            //    case 4:
+            //        labelWCurColor.Text = "I";
+            //        break;
+            //    case 5:
+            //        labelWCurColor.Text = "L";
+            //        break;
+            //    case 6:
+            //        labelWCurColor.Text = "Red";
+            //        break;
+            //    case 7:
+            //        labelWCurColor.Text = "Green";
+            //        break;
+            //    case 8:
+            //        labelWCurColor.Text = "Blue";
+            //        break;
+            //    case 9:
+            //        labelWCurColor.Text = "empty";
+            //        break;
+            //    case 10:
+            //        labelWCurColor.Text = "empty";
+            //        break;
+            //    case 11:
+            //        labelWCurColor.Text = "empty";
+            //        break;
+            //    default:
+            //        labelWCurColor.Text = "unknown";
+            //        break;
+            //}
             if (deviceParams.wheelParams.movStatus == 1)
             {
                 labelWMovStat.ForeColor = Color.Red;
@@ -270,6 +285,7 @@ namespace Follow_Up_Telescope
                 frmStartObs.Focus();
             }
         }
+
 
 
     }

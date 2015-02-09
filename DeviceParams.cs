@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+
 namespace Follow_Up_Telescope
 {
 
@@ -114,11 +115,70 @@ namespace Follow_Up_Telescope
             ccdParams = new CcdParams();
             focuserParams = new FocuserParams();
             wheelParams = new WheelParams();
+            teleStat = 0;
         }
         public MountParams mountParams;
         public CcdParams ccdParams;
         public FocuserParams focuserParams;
         public WheelParams wheelParams;//wheel status
+        public int teleStat;
+    }
+
+    public class OT
+    {
+        public OT()
+        {
+            startFlag = "";
+            id = "";
+            ra = "";
+            dec = "";
+            probeTime = "";
+            mag = "";
+            endFlag = "";
+            status = "";
+        }
+
+        public string startFlag;
+        public string id;
+        public string ra;
+        public string dec;
+        public string probeTime;
+        public string mag;
+        public string status;
+        public string endFlag;
+    }
+
+    public class GRB
+    {
+        public GRB()
+        {
+
+        }
+
+        
+    }
+
+    public class ObsTar
+    {
+        public ObsTar()
+        {
+            id = 0;
+            ra = "";
+            dec = "";
+            color = "";
+            expTime = 0.0;
+            amount = 0;
+            type = 0;
+            deviceType = "";
+        }
+        public int id;
+        public string ra;
+        public string dec;
+        public string color;
+        public double expTime;
+        public int amount;
+        public int type;
+        public string deviceType;
     }
 
 }

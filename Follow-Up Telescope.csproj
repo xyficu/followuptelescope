@@ -64,7 +64,8 @@
     <Compile Include="FutForm.Designer.cs">
       <DependentUpon>FutForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="FutTcpServer.cs" />
+    <Compile Include="FutNet.cs" />
+    <Compile Include="FutTwin.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Settings.cs" />
