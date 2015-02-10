@@ -48,6 +48,11 @@
             this.label3 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
+            this.label6 = new System.Windows.Forms.Label();
+            this.textBoxFileName = new System.Windows.Forms.TextBox();
+            this.columnHeaderFileName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.buttonDelTarget = new System.Windows.Forms.Button();
+            this.buttonInit = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -59,10 +64,11 @@
             this.columnHeaderDEC,
             this.columnHeaderColor,
             this.columnHeaderExpTime,
-            this.columnHeaderAmount});
+            this.columnHeaderAmount,
+            this.columnHeaderFileName});
             this.listView1.Location = new System.Drawing.Point(23, 22);
             this.listView1.Name = "listView1";
-            this.listView1.Size = new System.Drawing.Size(398, 242);
+            this.listView1.Size = new System.Drawing.Size(436, 242);
             this.listView1.TabIndex = 1;
             this.listView1.UseCompatibleStateImageBehavior = false;
             this.listView1.View = System.Windows.Forms.View.Details;
@@ -104,11 +110,14 @@
             // groupBox1
             // 
             this.groupBox1.Controls.Add(this.buttonAddTarget);
+            this.groupBox1.Controls.Add(this.buttonDelTarget);
+            this.groupBox1.Controls.Add(this.textBoxFileName);
             this.groupBox1.Controls.Add(this.textBoxAmount);
             this.groupBox1.Controls.Add(this.textBoxExpTime);
             this.groupBox1.Controls.Add(this.textBoxColor);
             this.groupBox1.Controls.Add(this.textBoxDEC);
             this.groupBox1.Controls.Add(this.textBoxRA);
+            this.groupBox1.Controls.Add(this.label6);
             this.groupBox1.Controls.Add(this.label5);
             this.groupBox1.Controls.Add(this.label4);
             this.groupBox1.Controls.Add(this.label3);
@@ -116,7 +125,7 @@
             this.groupBox1.Controls.Add(this.label1);
             this.groupBox1.Location = new System.Drawing.Point(465, 22);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(324, 189);
+            this.groupBox1.Size = new System.Drawing.Size(324, 213);
             this.groupBox1.TabIndex = 3;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "添加目标";
@@ -209,13 +218,54 @@
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(41, 12);
             this.label1.TabIndex = 0;
-            this.label1.Text = "时角：";
+            this.label1.Text = "赤经：";
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(53, 176);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(53, 12);
+            this.label6.TabIndex = 4;
+            this.label6.Text = "文件名：";
+            // 
+            // textBoxFileName
+            // 
+            this.textBoxFileName.Location = new System.Drawing.Point(112, 172);
+            this.textBoxFileName.Name = "textBoxFileName";
+            this.textBoxFileName.Size = new System.Drawing.Size(100, 21);
+            this.textBoxFileName.TabIndex = 9;
+            // 
+            // columnHeaderFileName
+            // 
+            this.columnHeaderFileName.Text = "文件名";
+            // 
+            // buttonDelTarget
+            // 
+            this.buttonDelTarget.Location = new System.Drawing.Point(231, 106);
+            this.buttonDelTarget.Name = "buttonDelTarget";
+            this.buttonDelTarget.Size = new System.Drawing.Size(75, 23);
+            this.buttonDelTarget.TabIndex = 11;
+            this.buttonDelTarget.Text = "删除";
+            this.buttonDelTarget.UseVisualStyleBackColor = true;
+            this.buttonDelTarget.Click += new System.EventHandler(this.buttonDelTarget_Click);
+            // 
+            // buttonInit
+            // 
+            this.buttonInit.Location = new System.Drawing.Point(496, 241);
+            this.buttonInit.Name = "buttonInit";
+            this.buttonInit.Size = new System.Drawing.Size(75, 23);
+            this.buttonInit.TabIndex = 12;
+            this.buttonInit.Text = "初始化";
+            this.buttonInit.UseVisualStyleBackColor = true;
+            this.buttonInit.Click += new System.EventHandler(this.buttonInit_Click);
             // 
             // StartObs
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(801, 428);
+            this.Controls.Add(this.buttonInit);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.buttonStartObs);
             this.Controls.Add(this.listView1);
@@ -250,6 +300,11 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button buttonAddTarget;
         private System.Windows.Forms.ColumnHeader columnHeaderAmount;
+        private System.Windows.Forms.TextBox textBoxFileName;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.ColumnHeader columnHeaderFileName;
+        private System.Windows.Forms.Button buttonDelTarget;
+        private System.Windows.Forms.Button buttonInit;
 
 
     }

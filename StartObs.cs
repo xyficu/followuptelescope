@@ -41,20 +41,21 @@ namespace Follow_Up_Telescope
         List<ListViewItem> targetList;
         ObsTar obsTar;
         System.Timers.Timer tmrObs;
-        Socket futSkt;
-        public StartObs(Dictionary<string, Socket> _deviceConnections, DeviceParams _deviceParams, ObsTar _obsTar, Socket _futSkt)
+        FutTwin futTwin;
+        public StartObs(Dictionary<string, Socket> _deviceConnections, DeviceParams _deviceParams, ObsTar _obsTar, FutTwin _futTwin)
         {
             InitializeComponent();
             deviceConnections = _deviceConnections;
             deviceParams = _deviceParams;
             obsTar = _obsTar;
-            futSkt = _futSkt;
+            futTwin = _futTwin;
 
             textBoxRA.Text = "5:00:00";
             textBoxDEC.Text = "40:00:00";
             textBoxColor.Text = "10";
             textBoxExpTime.Text = "5";
             textBoxAmount.Text = "3";
+            textBoxFileName.Text = "test";
 
             targetList = new List<ListViewItem>();
             //tarList = new Dictionary<string, ListViewItem>();
@@ -67,6 +68,10 @@ namespace Follow_Up_Telescope
             tmrObs.AutoReset = true;
             tmrObs.Enabled = true;
 
+            //listview setting
+            listView1.GridLines = true;
+            listView1.MultiSelect = true;
+            listView1.FullRowSelect = true;
         }
 
         private void CheckObsTar(object o, System.Timers.ElapsedEventArgs e)
@@ -104,8 +109,8 @@ namespace Follow_Up_Telescope
                             res = "1";
                             //发送初始化失败消息，并返回
                             cmd = "R" + obsTar.deviceType + ",INIT," + res + "," + lt;
-                            buf = Encoding.ASCII.GetBytes(cmd);
-                            futSkt.Send(buf);
+
+                            futTwin.SendMessage(cmd);
                             return;
                         }
                         //创建目录/data/yyyymmdd/
@@ -125,8 +130,7 @@ namespace Follow_Up_Telescope
                             res = "2";
                             //发送初始化失败消息，并返回
                             cmd = "R" + obsTar.deviceType + ",INIT," + res + "," + lt;
-                            buf = Encoding.ASCII.GetBytes(cmd);
-                            futSkt.Send(buf);
+                            futTwin.SendMessage(cmd);
                             return;
                         }
                         //转动到天顶位置拍摄一幅3s的图
@@ -135,14 +139,23 @@ namespace Follow_Up_Telescope
                         color = int.Parse(obsTar.color);
                         time = obsTar.expTime;
                         amount = obsTar.amount;
+                        fileName = obsTar.fileName;
                         obsThd = new Thread(new ThreadStart(ObsTarget));
                         obsThd.IsBackground = true;
                         obsThd.Start();
                         res = "0";
-                        //发送初始化成功消息，并返回
-                        cmd = "R" + obsTar.deviceType + ",INIT," + res + "," + lt;
-                        buf = Encoding.ASCII.GetBytes(cmd);
-                        futSkt.Send(buf);
+                        try
+                        {
+                            //发送初始化成功消息，并返回
+                            cmd = "R" + obsTar.deviceType + ",INIT," + res + "," + lt;
+                            futTwin.SendMessage(cmd);
+                            Thread.Sleep(1000);
+                        }
+                        catch (System.Exception ex)
+                        {
+                            Console.WriteLine(ex.Message);
+                        }
+                        
                     }
                 }
                     //type==1表示通常目标，执行通常观测步骤
@@ -161,16 +174,25 @@ namespace Follow_Up_Telescope
                     color = int.Parse(obsTar.color);
                     time = obsTar.expTime;
                     amount = obsTar.amount;
+                    fileName = obsTar.fileName;
                     obsThd = new Thread(new ThreadStart(ObsTarget));
                     obsThd.IsBackground = true;
                     obsThd.Start();
                     res = "0";
                     lt = GetLocalTime();
-                    cmd = "R" + obsTar.deviceType + ",OBS," + obsTar.id.ToString() + "," + obsTar.ra
+                    try
+                    {
+                        cmd = "R" + obsTar.deviceType + ",OBS," + obsTar.id.ToString() + "," + obsTar.ra
                          + "," + obsTar.dec + "," + obsTar.color + "," + obsTar.expTime.ToString()
-                         + "," + obsTar.amount + "," + res + "," + lt;
-                    buf = Encoding.ASCII.GetBytes(cmd);
-                    futSkt.Send(buf);
+                         + "," + obsTar.amount + "," + obsTar.fileName + "," + res + "," + lt;
+                        futTwin.SendMessage(cmd);
+                        Thread.Sleep(3000);
+                    }
+                    catch (System.Exception ex)
+                    {
+                        Console.WriteLine(ex.Message);
+                    }
+                    
                 }
 
             }
@@ -191,6 +213,7 @@ namespace Follow_Up_Telescope
         int color = 0;
         double time = 0.0;
         int amount = 1;
+        string fileName = "";
         public void ObsTarget()
         {
             Socket value;
@@ -259,9 +282,9 @@ namespace Follow_Up_Telescope
             if (deviceConnections.TryGetValue("CCD", out value))
             {
                 lt = GetLocalTime();
-                cmd = "C,GETIMG," + ra + "_" + dec + ",1," + time.ToString() + "," + amount + "," +
+                cmd = "C,GETIMG," + fileName + ",1," + time.ToString() + "," + amount + "," +
                       ra + "," + dec + "," + deviceParams.mountParams.ut + "," + deviceParams.mountParams.st + "," +
-                      "S1" + "," + "OBJECT" + "," + deviceParams.wheelParams.curPos.ToString() + "," + lt;
+                      "S1" + "," + "OBJECT" + "," + (deviceParams.wheelParams.curPos + 1).ToString() + "," + lt;
                 buf = Encoding.ASCII.GetBytes(cmd);
                 value.Send(buf);
             }
@@ -325,9 +348,10 @@ namespace Follow_Up_Telescope
 
                     ra = item.SubItems[1].Text;
                     dec = item.SubItems[2].Text;
-                    color = int.Parse(item.SubItems[3].Text);
+                    color = int.Parse(item.SubItems[3].Text) - 1;
                     time = double.Parse(item.SubItems[4].Text);
                     amount = int.Parse(item.SubItems[5].Text);
+                    fileName = item.SubItems[6].Text;
                     ObsTarget();
                 }
             }
@@ -338,14 +362,15 @@ namespace Follow_Up_Telescope
                 
         }
 
-        private void AddTarget(string ra, string dec, int color, double time, int amount)
+        private void AddTarget(string ra, string dec, int color, double time, int amount, string fileName)
         {
-            ListViewItem record = new ListViewItem(listView1.Items.Count.ToString());
+            ListViewItem record = new ListViewItem((listView1.Items.Count + 1).ToString());
             record.SubItems.Add(ra);
             record.SubItems.Add(dec);
             record.SubItems.Add(color.ToString());
             record.SubItems.Add(time.ToString());
             record.SubItems.Add(amount.ToString());
+            record.SubItems.Add(fileName);
             listView1.Items.Add(record);
         }
 
@@ -355,7 +380,8 @@ namespace Follow_Up_Telescope
                       textBoxDEC.Text,
                       int.Parse(textBoxColor.Text),
                       double.Parse(textBoxExpTime.Text),
-                      int.Parse(textBoxAmount.Text));
+                      int.Parse(textBoxAmount.Text),
+                      textBoxFileName.Text);
         }
 
         //让窗体关闭按钮作用改为隐藏
@@ -363,6 +389,30 @@ namespace Follow_Up_Telescope
         {
             e.Cancel = true;
             this.Hide();
+        }
+
+        private void buttonDelTarget_Click(object sender, EventArgs e)
+        {
+            int count = listView1.Items.Count;
+            for (int i = count - 1; i >= 0;i-- )
+            {
+                if (listView1.Items[i].Selected)
+                {
+                    listView1.Items.RemoveAt(i);
+                }
+            }
+        }
+
+        private void buttonInit_Click(object sender, EventArgs e)
+        {
+            obsTar.id = 0;
+            obsTar.ra = deviceParams.mountParams.st;
+            obsTar.dec = "40:00:00";
+            obsTar.color = "0";
+            obsTar.expTime = 3;
+            obsTar.amount = 1;
+            obsTar.fileName = "initial";
+            obsTar.type = 2;
         }
 
 

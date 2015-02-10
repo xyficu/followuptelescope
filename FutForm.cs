@@ -71,7 +71,7 @@ namespace Follow_Up_Telescope
             timerUpdateStatus.Enabled = true;
 
             //初始化观测界面窗口
-            frmStartObs = new StartObs(fut.mDeviceConnections, deviceParams, obsTar, futTwin.m_sktFut);
+            frmStartObs = new StartObs(fut.mDeviceConnections, deviceParams, obsTar, futTwin);
         }
 
 

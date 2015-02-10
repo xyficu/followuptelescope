@@ -8,7 +8,7 @@ using System.Threading;
 
 namespace Follow_Up_Telescope
 {
-    class FutTwin
+    public class FutTwin
     {
         private IPAddress m_ip;
         private IPEndPoint m_ep;
@@ -22,7 +22,7 @@ namespace Follow_Up_Telescope
         {
             deviceParams = dev;
             obsTar = _obsTar;
-            m_ip = IPAddress.Parse("190.168.1.115");  //将来改为190.168.1.205
+            m_ip = IPAddress.Parse("190.168.1.205");  //将来改为190.168.1.205
             m_ep = new IPEndPoint(m_ip, 30002);       //总控机端口为30002
             m_sktFut = new Socket(AddressFamily.InterNetwork, SocketType.Stream,
                 ProtocolType.IP);
@@ -39,7 +39,7 @@ namespace Follow_Up_Telescope
             try
             {
                 //发送注销消息
-                SendMessage("RS1");
+                SendMessage("RS2");
                 if (m_sktFut!=null)
                 {
                     m_sktFut.Shutdown(SocketShutdown.Both);
@@ -64,7 +64,7 @@ namespace Follow_Up_Telescope
 
                     m_connected = true;
                     //连接成功后发送注册消息
-                    SendMessage("S1");
+                    SendMessage("S2");
 
                     //连接成功后启动消息接收线程
                     Thread thd = new Thread(new ThreadStart(ReceiveMessage));
@@ -161,6 +161,8 @@ namespace Follow_Up_Telescope
                     //mount status
                     reply += "," + deviceParams.mountParams.ra;
                     reply += "," + deviceParams.mountParams.dec;
+                    reply += "," + deviceParams.mountParams.targetRa;
+                    reply += "," + deviceParams.mountParams.targetDec;
                     reply += "," + deviceParams.mountParams.az;
                     reply += "," + deviceParams.mountParams.alt;
                     reply += "," + deviceParams.mountParams.date;
@@ -199,6 +201,7 @@ namespace Follow_Up_Telescope
                     obsTar.expTime = 3;
                     obsTar.amount = 1;
                     obsTar.type = 2;
+                    obsTar.fileName = "initial";
                     obsTar.deviceType = deviceType;
                 }
                 else if (cmd == "OBS")
@@ -210,6 +213,7 @@ namespace Follow_Up_Telescope
                     obsTar.color = cmdList[5];
                     obsTar.expTime = double.Parse(cmdList[6]);
                     obsTar.amount = int.Parse(cmdList[7]);
+                    obsTar.fileName = cmdList[8];
                     obsTar.type = 1;
                     obsTar.deviceType = deviceType;
                     
@@ -228,7 +232,7 @@ namespace Follow_Up_Telescope
             //获取系统时间
             string lt = GetLocalTime();
             //每隔10s由设备端发给服务器
-            SendMessage("RS1,HOUSEKEEPING," + lt);
+            SendMessage("RS2,HOUSEKEEPING," + lt);
         }
 
         //获取local time

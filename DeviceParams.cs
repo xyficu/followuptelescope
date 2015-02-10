@@ -170,6 +170,7 @@ namespace Follow_Up_Telescope
             amount = 0;
             type = 0;
             deviceType = "";
+            fileName = "";
         }
         public int id;
         public string ra;
@@ -179,6 +180,7 @@ namespace Follow_Up_Telescope
         public int amount;
         public int type;
         public string deviceType;
+        public string fileName;
     }
 
 }
